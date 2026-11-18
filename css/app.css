@@ -409,3 +409,4 @@ body { font-family: var(--f-body); }
 .card.guides-home h3 { display: flex; align-items: center; gap: 8px; font: 600 16px var(--f-display); margin: 0; color: var(--ink); }
 .card.guides-home h3 .ic { stroke: var(--brand-blue); }
 .card.guides-home .list { margin: 8px 0; }
+[hidden] { display: none !important; }
