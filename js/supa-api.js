@@ -28,7 +28,7 @@
       const d = await q(sb.auth.verifyOtp({ email, token, type: 'email' }));
       uidCache = d.user ? d.user.id : null;
     },
-    async signInPassword(email, password) { const d = await q(sb.auth.signInWithPassword({ email, password })); uidCache = d.user ? d.user.id : null; },
+    async signInPassword(email, password) { const { data: d, error } = await sb.auth.signInWithPassword({ email, password }); if (error) throw new AL.ApiError(/invalid/i.test(error.message) ? 'BAD_LOGIN' : 'ERROR'); uidCache = d.user ? d.user.id : null; },
     // ----- «Увійти як» (лише суперадмін; перевіряє серверна функція impersonate) -----
     async impersonate(email) {
       const { data: { session } } = await sb.auth.getSession();

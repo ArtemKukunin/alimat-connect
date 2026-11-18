@@ -265,4 +265,6 @@ AL.I18N.en = {
   imp_done: "Opened account: {name}",
   act_impersonate: "Admin signed in as another user",
   quick_access: "Quick access",
+  show_password: "Show password",
+  err_bad_login: "Wrong email or password. Check that the keyboard did not add a capital letter or a space.",
 };

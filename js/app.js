@@ -200,14 +200,15 @@
       <p class="lead">${t('login_lead')}</p>
       <div class="seg"><button class="${ST.loginPw ? '' : 'on'}" data-lm="mail">${t('login_by_mail')}</button><button class="${ST.loginPw ? 'on' : ''}" data-lm="pw">${t('login_by_pw')}</button></div>
       <form id="f-pw" class="card form" ${ST.loginPw ? '' : 'hidden'}>
-        <label for="pw-email">${t('email')}</label><input id="pw-email" type="email" autocomplete="username" required placeholder="name@alimatgroup.com">
-        <label for="pw">${t('password')}</label><input id="pw" type="password" autocomplete="current-password" required minlength="6">
+        <label for="pw-email">${t('email')}</label><input id="pw-email" type="email" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email" required placeholder="name@alimatgroup.com">
+        <label for="pw">${t('password')}</label><input id="pw" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" required minlength="6">
+        <label class="switch"><input type="checkbox" id="pw-show"><span>${t('show_password')}</span></label>
         <button class="btn primary">${t('login')}</button>
         <p class="muted small">${t('login_pw_hint')}</p>
       </form>
       <form id="f-email" class="card form" ${ST.loginPw ? 'hidden' : ''}>
         <label for="email">${t('email')}</label>
-        <input id="email" type="email" autocomplete="email" required placeholder="name@example.com">
+        <input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email" required placeholder="name@example.com">
         <button class="btn primary">${t('send_code')}</button>
       </form>
       <form id="f-code" class="card form" hidden>
@@ -218,9 +219,10 @@
       </form>${companyCard()}</div>`;
     bindCabinetChange(v);
     $$('[data-lm]', v).forEach(b => b.onclick = () => { ST.loginPw = b.dataset.lm === 'pw'; render(); });
+    $('#pw-show').onchange = e => { $('#pw').type = e.target.checked ? 'text' : 'password'; };
     $('#f-pw').onsubmit = async e => {
       e.preventDefault();
-      const ok = await guard(async () => { await ST.api.signInPassword($('#pw-email').value.trim(), $('#pw').value); return true; });
+      const ok = await guard(async () => { await ST.api.signInPassword($('#pw-email').value.trim().toLowerCase(), $('#pw').value.trim()); return true; });
       if (ok) { ST.claimTried = false; await boot(); }
     };
     $('#f-email').onsubmit = async e => {

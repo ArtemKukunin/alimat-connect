@@ -265,4 +265,6 @@ AL.I18N.pl = {
   imp_done: "Otwarto panel: {name}",
   act_impersonate: "Wejście admina na cudze konto",
   quick_access: "Szybki dostęp",
+  show_password: "Pokaż hasło",
+  err_bad_login: "Nieprawidłowy e-mail lub hasło. Sprawdź, czy klawiatura nie dodała wielkiej litery lub spacji.",
 };
