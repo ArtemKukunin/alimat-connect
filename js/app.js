@@ -81,6 +81,7 @@
     image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>',
     sheet: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/>',
     upload: '<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>',
+    logout: '<path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 16l-4-4 4-4M6 12h10"/>',
     phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>',
     eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
   };
@@ -121,6 +122,10 @@
     let hb = $('#top-guides');
     if (!hb) { hb = document.createElement('button'); hb.id = 'top-guides'; hb.className = 'top-btn'; $('.top').appendChild(hb); }
     hb.innerHTML = `${icon('book')}<span>${t('lib_guides')}</span>`; hb.setAttribute('aria-label', t('lib_guides'));
+    let lb = $('#top-logout');
+    if (!lb) { lb = document.createElement('button'); lb.id = 'top-logout'; lb.className = 'top-btn ghost'; $('.top').appendChild(lb); }
+    lb.innerHTML = `${icon('logout')}<span>${t('logout')}</span>`; lb.setAttribute('aria-label', t('logout'));
+    lb.onclick = () => openSheet(`<h2>${t('logout_q')}</h2><p class="muted">${esc(me ? me.full_name : '')}</p><div class="actions"><button class="btn primary" id="lo-yes">${icon('logout')}${t('logout')}</button><button class="btn" data-close>${t('cancel')}</button></div>`, el => { el.querySelector('#lo-yes').onclick = async () => { closeSheet(); if (ST.api.impersonating && ST.api.impersonating()) { try { await ST.api.stopImpersonation(); } catch (e) { /* */ } } await logout(); }; });
     hb.onclick = () => { ST.tab = 'library'; ST.libSeg = 'guides'; ST.guide = null; ST.folder = null; ST.docPerson = null; ST.detail = null; render(); };
     if (ST.api.mode === 'demo' && me) {
       $('#demobar').innerHTML = `<span class="demo-tag">${t('demo')}</span><span class="demo-who">${esc(me.full_name)} · ${esc(t('role_' + me.role))}</span><button class="link" id="demo-switch">${t('demo_switch')}</button>`;

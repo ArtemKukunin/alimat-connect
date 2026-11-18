@@ -426,3 +426,6 @@ body { font-family: var(--f-body); }
 .tile:hover { border-color: var(--accent); }
 .top .logo, .top small { cursor: pointer; }
 @media (min-width: 760px) { .app, .tabs-inner, #view, .top, #demobar { max-width: 760px; } .tabs.tabs-top .tab span { overflow: visible; } }
+.top-btn.ghost { margin-left: 8px; border-color: var(--line); background: var(--surface); color: var(--muted); }
+.top-btn.ghost .ic { stroke: var(--muted); }
+@media (max-width: 420px) { .top-btn span { display: none; } .top-btn { padding: 6px 8px; } }
