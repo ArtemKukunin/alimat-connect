@@ -264,4 +264,5 @@ AL.I18N.en = {
   imp_back: "Go back",
   imp_done: "Opened account: {name}",
   act_impersonate: "Admin signed in as another user",
+  quick_access: "Quick access",
 };

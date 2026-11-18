@@ -264,4 +264,5 @@ AL.I18N.pl = {
   imp_back: "Wróć",
   imp_done: "Otwarto panel: {name}",
   act_impersonate: "Wejście admina na cudze konto",
+  quick_access: "Szybki dostęp",
 };

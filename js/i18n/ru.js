@@ -264,4 +264,5 @@ AL.I18N.ru = {
   imp_back: "Вернуться",
   imp_done: "Открыт кабинет: {name}",
   act_impersonate: "Вход админа в чужой кабинет",
+  quick_access: "Быстрый доступ",
 };

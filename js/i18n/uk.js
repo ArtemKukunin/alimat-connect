@@ -264,4 +264,5 @@ AL.I18N.uk = {
   imp_back: "Повернутися",
   imp_done: "Відкрито кабінет: {name}",
   act_impersonate: "Вхід адміна в чужий кабінет",
+  quick_access: "Швидкий доступ",
 };

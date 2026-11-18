@@ -105,6 +105,11 @@
     const me = ST.me;
     $('#demobar').hidden = !(ST.api.mode === 'demo' && me);
     $('.top').hidden = !me;
+    $$('.top .logo, .top small').forEach(el => { el.onclick = () => { if (!ST.me) return; ST.tab = 'home'; ST.detail = null; ST.guide = null; ST.folder = null; ST.docPerson = null; render(); }; el.title = t('tab_home'); });
+    const nav = $('#tabsnav'), wide = window.matchMedia('(min-width: 760px)').matches;
+    if (wide && !nav.classList.contains('tabs-top')) { $('.top').after(nav); nav.classList.add('tabs-top'); }
+    if (!wide && nav.classList.contains('tabs-top')) { document.body.appendChild(nav); nav.classList.remove('tabs-top'); }
+    if (wide) nav.style.top = ($('.top').offsetHeight || 56) + 'px';
     const imp = me && ST.api.impersonating && ST.api.impersonating();
     let ib = $('#impbar');
     if (!ib) { ib = document.createElement('div'); ib.id = 'impbar'; $('.top').after(ib); }
@@ -278,6 +283,19 @@
       <p class="muted small">${esc(t('central_fallback', { phone: C.phone }))}</p></div>`;
   }
 
+  function quickTiles(me) {
+    const T = [
+      ['library:guides', 'book', t('lib_guides')],
+      ['library:docs', 'folder', t('lib_docs')],
+      AL.can.inbox(me) && ['requests', 'inbox', t('tab_requests')],
+      AL.can.people(me) && ['people', 'people', t('tab_people')],
+      AL.isGlobal(me) && ['accounts', 'key', t('menu_accounts')],
+      AL.can.invites(me) && ['invites', 'plus', t('menu_invites')],
+      AL.can.analytics(me) && ['analytics', 'chart', t('menu_analytics')],
+      AL.can.audit(me) && ['audit', 'log', t('menu_audit')],
+    ].filter(Boolean);
+    return `<h2 class="sec">${t('quick_access')}</h2><div class="tiles">${T.map(([k, ic, l]) => `<button class="tile" data-qt="${k}">${icon(ic)}<span>${esc(l)}</span></button>`).join('')}</div>`;
+  }
   function renderNeedInvite(v) {
     v.innerHTML = `<div class="auth">${header(t('reg_title'))}<form id="f-inv" class="card form">
       <p>${t('need_invite')}</p><label for="inv">${t('invite_code')}</label><input id="inv" required placeholder="ANIMEX01">
@@ -387,6 +405,7 @@
     v.innerHTML = `${header(hello, [me.position || t('role_' + me.role), place(me)].filter(Boolean).join(' · '))}
       ${blockBanner()}
       ${showCoord ? coordCard(coords) : ''}
+      ${cabinetOf(me) !== 'worker' ? quickTiles(me) : ''}
       ${myGuides.length ? `<div class="card guides-home"><h3>${icon('book')}${t('home_guides')}</h3><p class="muted small">${t('home_guides_sub')}</p>
         <div class="list">${myGuides.map(g => { const due = g.require_ack && (g.acked_version || 0) < g.version; return `<button class="row" data-hg="${g.id}"><span class="grow"><b>${esc(g.title)}</b><small>${esc(g.summary || '')}</small></span>${due ? `<span class="pill amber">${t('guide_need_ack')}</span>` : `<span class="pill green">${icon('check', 'sm')}</span>`}</button>`; }).join('')}</div>
         <button class="btn small" id="all-guides">${t('home_guides_all')}</button></div>` : ''}
@@ -396,6 +415,7 @@
       <h2 class="sec">${t('announcements')}</h2>
       <div class="stack">${anns.length ? anns.map(a => annCard(a, stats[a.id])).join('') : `<div class="empty">${t('no_announcements')}</div>`}</div>
       ${donePolls.length ? `<h2 class="sec">${t('polls_done')}</h2><div class="stack">${donePolls.map(pollCard).join('')}</div>` : ''}`;
+    $$('[data-qt]', v).forEach(b => b.onclick = () => { const [tab, seg] = b.dataset.qt.split(':'); ST.tab = tab; if (seg) ST.libSeg = seg; ST.guide = null; ST.folder = null; ST.docPerson = null; render(); });
     $$('[data-hg]', v).forEach(b => b.onclick = () => { ST.tab = 'library'; ST.libSeg = 'guides'; ST.guide = b.dataset.hg; ST.guideOrig = false; render(); });
     const ag = $('#all-guides', v); if (ag) ag.onclick = () => { ST.tab = 'library'; ST.libSeg = 'guides'; ST.guide = null; render(); };
     const fd = $('#go-fd', v); if (fd) fd.onclick = () => { ST.tab = 'firstday'; render(); };

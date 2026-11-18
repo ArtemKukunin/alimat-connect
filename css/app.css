@@ -414,3 +414,15 @@ body { font-family: var(--f-body); }
 #impbar span { display: inline-flex; align-items: center; gap: 6px; }
 #impbar .ic { stroke: #fff; width: 18px; height: 18px; }
 #impbar .btn { background: #fff; color: var(--brand-blue-a); border-color: #fff; min-height: 32px; }
+/* на комп'ютері меню — нагорі під логотипом */
+.tabs.tabs-top { position: sticky; bottom: auto; z-index: 5; border-top: 0; border-bottom: 1px solid var(--line); padding-bottom: 0; }
+.tabs.tabs-top .tab { flex-direction: row; justify-content: center; gap: 6px; padding: 10px 6px; font-size: 13.5px; }
+.tabs.tabs-top .tab.on::before { top: auto; bottom: 0; border-radius: 3px 3px 0 0; }
+@media (min-width: 760px) { body { padding-bottom: 0 !important; } #view { padding-bottom: 40px; } }
+/* плитки швидкого доступу */
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 8px; }
+.tile { display: flex; align-items: center; gap: 10px; padding: 14px; border-radius: var(--r); border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow); font-weight: 600; color: var(--ink); text-align: left; }
+.tile .ic { flex: none; width: 22px; height: 22px; stroke: var(--accent); }
+.tile:hover { border-color: var(--accent); }
+.top .logo, .top small { cursor: pointer; }
+@media (min-width: 760px) { .app, .tabs-inner, #view, .top, #demobar { max-width: 760px; } .tabs.tabs-top .tab span { overflow: visible; } }
