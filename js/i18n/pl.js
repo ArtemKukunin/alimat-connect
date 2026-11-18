@@ -259,4 +259,9 @@ AL.I18N.pl = {
   login_by_pw: "Hasło",
   password: "Hasło",
   login_pw_hint: "Hasło nadaje administrator. Przy pierwszym logowaniu panel ustawi się według Twojego e-maila.",
+  imp_as: "Zaloguj jako ta osoba",
+  imp_banner: "Tryb administratora: jesteś w panelu „{name}”",
+  imp_back: "Wróć",
+  imp_done: "Otwarto panel: {name}",
+  act_impersonate: "Wejście admina na cudze konto",
 };

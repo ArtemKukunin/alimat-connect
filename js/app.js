@@ -105,6 +105,14 @@
     const me = ST.me;
     $('#demobar').hidden = !(ST.api.mode === 'demo' && me);
     $('.top').hidden = !me;
+    const imp = me && ST.api.impersonating && ST.api.impersonating();
+    let ib = $('#impbar');
+    if (!ib) { ib = document.createElement('div'); ib.id = 'impbar'; $('.top').after(ib); }
+    ib.hidden = !imp;
+    if (imp) {
+      ib.innerHTML = `<span>${icon('eye')}${esc(t('imp_banner', { name: me.full_name }))}</span><button class="btn small" id="imp-back">${t('imp_back', { name: imp.name || '' })}</button>`;
+      $('#imp-back').onclick = async () => { const ok = await guard(async () => { await ST.api.stopImpersonation(); return true; }); if (ok) { await boot(); ST.tab = 'people'; render(); } };
+    }
     let hb = $('#top-guides');
     if (!hb) { hb = document.createElement('button'); hb.id = 'top-guides'; hb.className = 'top-btn'; $('.top').appendChild(hb); }
     hb.innerHTML = `${icon('book')}<span>${t('lib_guides')}</span>`; hb.setAttribute('aria-label', t('lib_guides'));
@@ -724,6 +732,7 @@
       <div class="actions">
         ${activate ? `<button class="btn" id="act">${icon('check')}${t('mark_started')}</button>` : ''}
         ${task ? `<button class="btn" id="tsk">${icon('task')}${t('give_task')}</button>` : ''}
+        ${me.role === 'superadmin' && u.id !== me.id ? `<button class="btn" id="imp">${icon('eye')}${t('imp_as')}</button>` : ''}
         ${AL.canPersonalDocs(me, u, false) ? `<button class="btn" id="docs">${icon('folder')}${t('docs_person_btn')}</button>` : ''}
         ${admin ? `<button class="btn" id="edit">${icon('tree')}${t('edit_role')}</button>` : ''}
         ${admin ? (blk !== 'none' ? `<button class="btn" id="unb">${icon('lock')}${t('unblock')}</button>` : `<button class="btn" id="blk">${icon('lock')}${t('block_user')}</button>`) : ''}
@@ -733,6 +742,7 @@
       const b = id => $('#' + id, el);
       if (b('act')) b('act').onclick = async () => { const ok = await guard(async () => { await ST.api.updateUser(u.id, { role: u.role, project_id: u.project_id, department_id: u.department_id, group_id: u.group_id, position: u.position, status: 'active' }); return true; }); if (ok) { closeSheet(); toast(t('saved'), 'good'); render(); } };
       if (b('tsk')) b('tsk').onclick = () => { closeSheet(); ST.prefill = u.id; ST.createSeg = 'task'; ST.tab = 'create'; render(); };
+      if (b('imp')) b('imp').onclick = () => AL.impersonate(u.email, u.id, u.full_name);
       if (b('docs')) b('docs').onclick = () => { closeSheet(); ST.docBackTab = ST.tab; ST.tab = 'library'; ST.libSeg = 'docs'; ST.folder = null; ST.guide = null; ST.docPerson = u.id; render(); };
       if (b('unb')) b('unb').onclick = async () => { const ok = await guard(async () => { await ST.api.blockUser(u.id, 'none', null, t('unblocked_reason')); return true; }); if (ok) { closeSheet(); toast(t('unblocked'), 'good'); render(); } };
       if (b('blk')) b('blk').onclick = () => {
@@ -968,6 +978,11 @@
 
   // ---------- помічники для інших модулів ----------
   AL.LANGS = LANGS;
+  AL.impersonate = async (email, id, name) => {
+    if (!email && ST.api.mode !== 'demo') return toast(t('err_not_found'), 'bad');
+    const ok = await guard(async () => { await ST.api.impersonate(email, id); return true; });
+    if (ok) { closeSheet(); ST.tab = 'home'; await boot(); toast(t('imp_done', { name: name || email }), 'good'); }
+  };
   AL.ui = { ST, $, $$, esc, t, header, bindBack, openSheet, closeSheet, guard, toast, icon, fDate, fTime, fAgo, render };
 
   // ---------- старт ----------

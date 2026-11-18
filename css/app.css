@@ -410,3 +410,7 @@ body { font-family: var(--f-body); }
 .card.guides-home h3 .ic { stroke: var(--brand-blue); }
 .card.guides-home .list { margin: 8px 0; }
 [hidden] { display: none !important; }
+#impbar { position: sticky; top: 47px; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 16px; background: var(--brand-blue); color: #fff; font-size: 13.5px; font-weight: 600; }
+#impbar span { display: inline-flex; align-items: center; gap: 6px; }
+#impbar .ic { stroke: #fff; width: 18px; height: 18px; }
+#impbar .btn { background: #fff; color: var(--brand-blue-a); border-color: #fff; min-height: 32px; }

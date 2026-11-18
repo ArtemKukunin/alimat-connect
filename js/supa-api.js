@@ -29,6 +29,27 @@
       uidCache = d.user ? d.user.id : null;
     },
     async signInPassword(email, password) { const d = await q(sb.auth.signInWithPassword({ email, password })); uidCache = d.user ? d.user.id : null; },
+    // ----- «Увійти як» (лише суперадмін; перевіряє серверна функція impersonate) -----
+    async impersonate(email) {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) throw new AL.ApiError('AUTH');
+      const r = await sb.functions.invoke('impersonate', { body: { email } });
+      if (r.error) { let c = 'ERROR'; try { c = (await r.error.context.json()).error || c; } catch (e) { /* */ } throw new AL.ApiError(c); }
+      try { localStorage.setItem('alimat-admin-session', JSON.stringify({ access_token: session.access_token, refresh_token: session.refresh_token, name: (meCache && meCache.full_name) || session.user.email })); } catch (e) { /* */ }
+      const v = await sb.auth.verifyOtp({ token_hash: r.data.token_hash, type: 'magiclink' });
+      if (v.error) { localStorage.removeItem('alimat-admin-session'); throw err(v.error); }
+      uidCache = v.data.user ? v.data.user.id : null; meCache = null;
+      if (uidCache) { const c = await sb.rpc('claim_prepared_account', { p_lang: 'pl' }); if (c.error) console.warn(c.error); }
+    },
+    impersonating() { try { const s = localStorage.getItem('alimat-admin-session'); return s ? JSON.parse(s) : null; } catch (e) { return null; } },
+    async stopImpersonation() {
+      const s = this.impersonating(); if (!s) return;
+      await sb.auth.signOut({ scope: 'local' });
+      localStorage.removeItem('alimat-admin-session');
+      const r = await sb.auth.setSession({ access_token: s.access_token, refresh_token: s.refresh_token });
+      uidCache = r.data && r.data.user ? r.data.user.id : null; meCache = null;
+      if (r.error) throw err(r.error);
+    },
     async signOut() { await sb.auth.signOut(); uidCache = null; meCache = null; },
 
     async inviteInfo(code) { return rpc('get_invite_info', { p_code: String(code || '').toUpperCase().trim() }); },

@@ -259,4 +259,9 @@ AL.I18N.en = {
   login_by_pw: "Password",
   password: "Password",
   login_pw_hint: "Your administrator gives you the password. On first sign-in your account is set up from your email.",
+  imp_as: "Sign in as this person",
+  imp_banner: "Admin mode: you are in “{name}”’s account",
+  imp_back: "Go back",
+  imp_done: "Opened account: {name}",
+  act_impersonate: "Admin signed in as another user",
 };

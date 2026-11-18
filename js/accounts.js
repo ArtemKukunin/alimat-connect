@@ -33,7 +33,8 @@
     const me = ST.me;
     if (a && a.claimed) {
       return openSheet(`<h2>${esc(a.full_name)}</h2><p class="muted">${esc(t('acc_claimed_note', { date: fDate(a.claimed_at) }))}</p>
-        <button class="btn primary" id="go-people">${t('tab_people')}</button>`, el => {
+        <div class="actions"><button class="btn primary" id="go-people">${t('tab_people')}</button>${me.role === 'superadmin' ? `<button class="btn" id="imp">${t('imp_as')}</button>` : ''}</div>`, el => {
+        const ib = el.querySelector('#imp'); if (ib) ib.onclick = () => AL.impersonate(a.emails[0], null, a.full_name);
         el.querySelector('#go-people').onclick = () => { closeSheet(); ST.peopleQ = a.full_name; ST.tab = 'people'; U().render(); };
       });
     }
@@ -51,6 +52,7 @@
       <label for="apr">${t('acc_main_project')}</label><select id="apr"><option value="">—</option>${projs.map(p => `<option value="${p.id}" ${a && a.project_id === p.id ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}</select>
       <fieldset class="checks" id="asp"><legend>${t('acc_staff_projects')}</legend>${projs.map(p => `<label class="switch"><input type="checkbox" value="${p.id}" ${sp.has(p.id) ? 'checked' : ''}><span>${esc(p.name)}</span></label>`).join('')}</fieldset>
       <button class="btn primary wide">${t('save')}</button>
+      ${a && me.role === 'superadmin' ? `<button type="button" class="btn wide" id="aimp">${t('imp_as')}</button>` : ''}
       ${a ? `<button type="button" class="btn danger wide" id="adel">${t('acc_delete')}</button>` : ''}</form>`, el => {
       const role = el.querySelector('#ar'), box = el.querySelector('#asp');
       const sync = () => { box.hidden = !['coordinator', 'hr', 'admin_project'].includes(role.value); };
@@ -64,6 +66,7 @@
         const ok = await guard(async () => { await ST.api.savePrepared(o); return true; });
         if (ok) { closeSheet(); toast(t('saved'), 'good'); U().render(); }
       };
+      const ai = el.querySelector('#aimp'); if (ai) ai.onclick = () => AL.impersonate(a.emails[0], null, a.full_name);
       const d = el.querySelector('#adel'); if (d) d.onclick = async () => {
         const ok = await guard(async () => { await ST.api.deletePrepared(a.id); return true; });
         if (ok) { closeSheet(); toast(t('saved'), 'good'); U().render(); }

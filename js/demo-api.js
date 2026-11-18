@@ -202,6 +202,9 @@
 
   const api = {
     mode: 'demo',
+    impersonating() { return S.adminBack ? { name: userName(S.adminBack) } : null; },
+    async impersonate(email, id) { const m = me(); need(m && m.role === 'superadmin'); const t = S.users.find(u => u.id === id || u.email === email); need(t, 'NOT_FOUND'); S.adminBack = m.id; S.current = t.id; audit('impersonate', t.id, { name: t.full_name }); save(); },
+    async stopImpersonation() { if (S.adminBack) { S.current = S.adminBack; S.adminBack = null; save(); } },
     async claimAccount() { return { ok: false }; },
     async preparedAccounts() {
       need(AL.isGlobal(me()));
