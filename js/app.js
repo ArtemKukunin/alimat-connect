@@ -185,7 +185,14 @@
       ${BRAND()}
       ${cabinetChosen()}
       <p class="lead">${t('login_lead')}</p>
-      <form id="f-email" class="card form">
+      <div class="seg"><button class="${ST.loginPw ? '' : 'on'}" data-lm="mail">${t('login_by_mail')}</button><button class="${ST.loginPw ? 'on' : ''}" data-lm="pw">${t('login_by_pw')}</button></div>
+      <form id="f-pw" class="card form" ${ST.loginPw ? '' : 'hidden'}>
+        <label for="pw-email">${t('email')}</label><input id="pw-email" type="email" autocomplete="username" required placeholder="name@alimatgroup.com">
+        <label for="pw">${t('password')}</label><input id="pw" type="password" autocomplete="current-password" required minlength="6">
+        <button class="btn primary">${t('login')}</button>
+        <p class="muted small">${t('login_pw_hint')}</p>
+      </form>
+      <form id="f-email" class="card form" ${ST.loginPw ? 'hidden' : ''}>
         <label for="email">${t('email')}</label>
         <input id="email" type="email" autocomplete="email" required placeholder="name@example.com">
         <button class="btn primary">${t('send_code')}</button>
@@ -197,6 +204,12 @@
         <button class="btn primary">${t('login')}</button>
       </form>${companyCard()}</div>`;
     bindCabinetChange(v);
+    $$('[data-lm]', v).forEach(b => b.onclick = () => { ST.loginPw = b.dataset.lm === 'pw'; render(); });
+    $('#f-pw').onsubmit = async e => {
+      e.preventDefault();
+      const ok = await guard(async () => { await ST.api.signInPassword($('#pw-email').value.trim(), $('#pw').value); return true; });
+      if (ok) { ST.claimTried = false; await boot(); }
+    };
     $('#f-email').onsubmit = async e => {
       e.preventDefault(); const email = $('#email').value.trim();
       const ok = await guard(async () => { await ST.api.sendCode(email); return true; });

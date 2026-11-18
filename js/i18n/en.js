@@ -255,4 +255,8 @@ AL.I18N.en = {
   send_code: "Send sign-in email",
   code_sent: "We sent an email to {email}. Open it on this device and tap “Sign in” — your account opens automatically. If the email contains a 6-digit code, enter it below.",
   code: "Code from the email (if any)",
+  login_by_mail: "Email link",
+  login_by_pw: "Password",
+  password: "Password",
+  login_pw_hint: "Your administrator gives you the password. On first sign-in your account is set up from your email.",
 };

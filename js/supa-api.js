@@ -28,6 +28,7 @@
       const d = await q(sb.auth.verifyOtp({ email, token, type: 'email' }));
       uidCache = d.user ? d.user.id : null;
     },
+    async signInPassword(email, password) { const d = await q(sb.auth.signInWithPassword({ email, password })); uidCache = d.user ? d.user.id : null; },
     async signOut() { await sb.auth.signOut(); uidCache = null; meCache = null; },
 
     async inviteInfo(code) { return rpc('get_invite_info', { p_code: String(code || '').toUpperCase().trim() }); },

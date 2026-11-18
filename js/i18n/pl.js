@@ -255,4 +255,8 @@ AL.I18N.pl = {
   send_code: "Wyślij e-mail do logowania",
   code_sent: "Wysłaliśmy e-mail na {email}. Otwórz go na tym urządzeniu i kliknij „Sign in” — panel otworzy się sam. Jeśli w e-mailu jest 6-cyfrowy kod, wpisz go poniżej.",
   code: "Kod z e-maila (jeśli jest)",
+  login_by_mail: "E-mail z linkiem",
+  login_by_pw: "Hasło",
+  password: "Hasło",
+  login_pw_hint: "Hasło nadaje administrator. Przy pierwszym logowaniu panel ustawi się według Twojego e-maila.",
 };
