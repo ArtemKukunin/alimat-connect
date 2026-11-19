@@ -1,7 +1,7 @@
 /* Демо-сервер: працює в браузері на тестових даних, повторює правила бази даних. */
 (function () {
   const AL = window.AL;
-  const KEY = 'alimat-demo-v3';
+  const KEY = 'alimat-demo-v4';
   const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2) + Date.now().toString(36));
   const now = () => new Date().toISOString();
   const ago = (h) => new Date(Date.now() - h * 3600e3).toISOString();
@@ -11,7 +11,7 @@
   AL.ApiError = ApiError;
 
   function seed() {
-    const P1 = 'p-animex', P2 = 'p-drosed';
+    const P1 = 'p-animex', P2 = 'p-konskowola';
     const D1 = 'd-uboj', D2 = 'd-rozbior', D3 = 'd-pakowanie';
     const G1 = 'g-uboj-a', G2 = 'g-uboj-b', G3 = 'g-rozbior-a', G4 = 'g-pak-a';
     const u = (id, full_name, role, o = {}) => Object.assign({
@@ -71,7 +71,7 @@
       ann('a2', 'u-tomasz', 'project', { project_id: P1, title: 'Szkolenie BHP w sobotę', body: 'W sobotę o 9:00 obowiązkowe szkolenie BHP dla wszystkich nowych osób. Sala konferencyjna, budynek B.', created_at: ago(20) }),
       ann('a3', 'u-andrii', 'project', { project_id: P1, title: 'Виплата зарплати 10 жовтня', body: 'Зарплата за вересень надійде 10.10. Розрахункові листки — у кадровій з 9 жовтня.', created_at: ago(48) }),
       ann('a4', 'u-olena', 'all', { title: 'Новий додаток ALIMAT Connect', body: 'Усі заявки (відгул, лікарняний, відпустка, житло, зарплата, скарги) тепер подаються тут. Групи в месенджерах закриваються з 1 листопада.', created_at: ago(72) }),
-      ann('a5', 'u-andrii', 'project', { project_id: P2, title: 'Zmiana grafiku w Drosed', body: 'Od poniedziałku zmiana II zaczyna o 14:30.', created_at: ago(10) }),
+      ann('a5', 'u-andrii', 'project', { project_id: P2, title: 'Zmiana grafiku w Końskowoli', body: 'Od poniedziałku zmiana II zaczyna o 14:30.', created_at: ago(10) }),
     ];
     const reads = [['a4', 'u-serhii'], ['a4', 'u-ram'], ['a4', 'u-ion'], ['a3', 'u-serhii'], ['a3', 'u-ion'], ['a3', 'u-maria'], ['a2', 'u-ion'], ['a1', 'u-dmytro']]
       .map(([a, u]) => ({ announcement_id: a, user_id: u }));
@@ -101,7 +101,7 @@
     ];
     return {
       v: 3, current: null, lib: seedLib(users, P1),
-      projects: [{ id: P1, name: 'Animex K3' }, { id: P2, name: 'Konskowola Meat' }, ...['Animex K2', 'Animex Suwałki', 'Citronex', 'Karol', 'Bida (Bolesław)', 'Bida Opole', 'Bida Lublin', 'Lipce Reymontowskie', 'Biuro Kutno', 'Biuro Kraków'].map((name, i) => ({ id: 'p-x' + i, name }))],
+      projects: [{ id: P1, name: 'Animex K3' }, { id: P2, name: 'Końskowola' }, ...['Animex K2', 'Animex Suwałki', 'Karol', 'Bida Bolesław', 'Bida Opole', 'Bida Lublin', 'Biuro Kutno', 'Biuro Kraków', 'Lipce', 'Citronex'].map((name, i) => ({ id: 'p-x' + i, name }))],
       departments: [{ id: D1, project_id: P1, name: 'Ubój' }, { id: D2, project_id: P1, name: 'Rozbiór' }, { id: D3, project_id: P2, name: 'Pakowanie' }],
       groups: [{ id: G1, department_id: D1, name: 'Zmiana A' }, { id: G2, department_id: D1, name: 'Zmiana B' }, { id: G3, department_id: D2, name: 'Zmiana A' }, { id: G4, department_id: D3, name: 'Zmiana A' }],
       users, requests, messages, announcements, reads, polls, poll_votes, poll_voters, tasks, onboarding, invites, audit,
