@@ -268,4 +268,10 @@ AL.I18N.pl = {
   show_password: "Pokaż hasło",
   err_bad_login: "Nieprawidłowy e-mail lub hasło. Sprawdź, czy klawiatura nie dodała wielkiej litery lub spacji.",
   logout_q: "Wylogować się?",
+  qr_login: "Zaloguj na telefonie (kod QR)",
+  qr_login_sub: "Bez hasła: zeskanuj kod telefonem",
+  qr_login_how: "Skieruj aparat telefonu na kod i otwórz link — telefon zaloguje się na Twoje konto.",
+  qr_login_note: "Kod jest jednorazowy i działa ok. godziny. Nikomu go nie przesyłaj.",
+  qr_expired: "Link logowania został już użyty lub wygasł. Wygeneruj nowy kod QR.",
+  act_device_login: "Logowanie na innym urządzeniu (QR)",
 };

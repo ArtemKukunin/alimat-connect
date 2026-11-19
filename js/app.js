@@ -854,6 +854,7 @@
       <div class="person"><span class="av lg">${esc(initials(me.full_name))}</span><div><h2>${esc(me.full_name)}</h2><p class="muted">${esc(t('role_' + me.role))}${me.position ? ' · ' + esc(me.position) : ''}</p></div></div>
       <dl class="kv"><dt>${t('phone')}</dt><dd>${esc(me.phone || '—')}</dd><dt>${t('email')}</dt><dd>${esc(me.email || '—')}</dd><dt>${t('workplace')}</dt><dd>${esc(place(me) || '—')}</dd>${me.work_function ? `<dt>${t('work_function')}</dt><dd>${esc(t('fn_' + me.work_function))}</dd>` : ''}</dl>
       <button class="card row-card" id="my-docs">${icon('folder')}<span class="grow"><b>${t('docs_mine')}</b><small>${t('docs_mine_sub')}</small></span></button>
+      ${ST.api.mode !== 'demo' ? `<button class="card row-card" id="qr-login">${icon('phone')}<span class="grow"><b>${t('qr_login')}</b><small>${t('qr_login_sub')}</small></span></button>` : ''}
       <div id="prof-coord"></div>
       ${companyCard(true)}
       <h2 class="sec">${t('account_id')}</h2><div class="copyrow"><input id="myid" readonly class="mono" value="${esc(me.id)}" aria-label="${t('account_id')}"><button class="btn" id="cpid">${icon('copy')}${t('copy')}</button></div>
@@ -864,6 +865,15 @@
     bindLang(v); bindBack(v, 'more');
     $('#lo', v).onclick = logout;
     if (cabinetOf(me) === 'worker' || me.role === 'leader') ST.api.myCoordinators().then(l => { const el = $('#prof-coord', v); if (el) el.innerHTML = coordCard(l); }).catch(() => { });
+    const ql = $('#qr-login', v); if (ql) ql.onclick = async () => {
+      const link = await guard(() => ST.api.deviceLoginLink()); if (!link) return;
+      openSheet(`<h2>${t('qr_login')}</h2><p class="muted">${t('qr_login_how')}</p><div class="qr" id="qr"></div>
+        <div class="copyrow"><input id="ql" readonly value="${esc(link)}"><button class="btn" id="qc">${icon('copy')}${t('copy')}</button></div>
+        <p class="muted small">${t('qr_login_note')}</p>`, el => {
+        try { if (window.QRCode) new window.QRCode(el.querySelector('#qr'), { text: link, width: 220, height: 220, colorDark: '#1a1a18', colorLight: '#ffffff' }); } catch (e) { /* */ }
+        el.querySelector('#qc').onclick = () => { const i = el.querySelector('#ql'); if (navigator.clipboard) navigator.clipboard.writeText(link).then(() => toast(t('copied'), 'good')).catch(() => i.select()); else i.select(); };
+      });
+    };
     $('#my-docs', v).onclick = () => { ST.tab = 'library'; ST.libSeg = 'docs'; ST.docPerson = me.id; render(); };
     $('#cpid', v).onclick = () => { const i = $('#myid', v); if (navigator.clipboard) navigator.clipboard.writeText(me.id).then(() => toast(t('copied'), 'good')).catch(() => { i.select(); toast(t('copy_manual')); }); else { i.select(); toast(t('copy_manual')); } };
   }
@@ -1039,6 +1049,7 @@
     ST.api = live ? AL.liveApi : AL.demoApi;
     await ST.api.init(cfg);
     await boot();
+    if (AL.loginLinkError) toast(t('qr_expired'), 'bad');
     if (live) setInterval(() => { if (ST.me && !document.hidden) updateBadges(); }, 30000);
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#sheet').hidden) closeSheet(); });
     if ('serviceWorker' in navigator && live) navigator.serviceWorker.register('sw.js').catch(() => { });

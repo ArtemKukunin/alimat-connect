@@ -268,4 +268,10 @@ AL.I18N.en = {
   show_password: "Show password",
   err_bad_login: "Wrong email or password. Check that the keyboard did not add a capital letter or a space.",
   logout_q: "Sign out?",
+  qr_login: "Sign in on phone (QR code)",
+  qr_login_sub: "No password: scan the code with your phone",
+  qr_login_how: "Point your phone camera at the code and open the link — the phone signs in to your account.",
+  qr_login_note: "The code works once, for about an hour. Do not forward it.",
+  qr_expired: "This sign-in link was already used or has expired. Generate a new QR code.",
+  act_device_login: "Signed in on another device (QR)",
 };

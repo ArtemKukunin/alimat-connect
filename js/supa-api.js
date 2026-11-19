@@ -18,6 +18,14 @@
     mode: 'live',
     async init(cfg) {
       sb = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY, { auth: { persistSession: true } });
+      // Одноразовий вхід з QR-коду (?login=…): відкрито на телефоні після сканування
+      let tk = null;
+      try { const u = new URL(location.href); tk = u.searchParams.get('login'); if (tk) { u.searchParams.delete('login'); history.replaceState(null, '', u); } } catch (e) { /* */ }
+      if (tk) {
+        await sb.auth.signOut({ scope: 'local' }).catch(() => { });
+        const v = await sb.auth.verifyOtp({ token_hash: tk, type: 'magiclink' });
+        if (v.error) AL.loginLinkError = true;
+      }
       const { data } = await sb.auth.getSession();
       uidCache = data.session ? data.session.user.id : null;
       sb.auth.onAuthStateChange((_e, s) => { uidCache = s ? s.user.id : null; meCache = null; });
@@ -40,6 +48,11 @@
       if (v.error) { localStorage.removeItem('alimat-admin-session'); throw err(v.error); }
       uidCache = v.data.user ? v.data.user.id : null; meCache = null;
       if (uidCache) { const c = await sb.rpc('claim_prepared_account', { p_lang: 'pl' }); if (c.error) console.warn(c.error); }
+    },
+    async deviceLoginLink() {
+      const r = await sb.functions.invoke('impersonate', { body: { self: true } });
+      if (r.error) { let c = 'ERROR'; try { c = (await r.error.context.json()).error || c; } catch (e) { /* */ } throw new AL.ApiError(c); }
+      return location.origin + location.pathname + '?login=' + encodeURIComponent(r.data.token_hash);
     },
     impersonating() { try { const s = localStorage.getItem('alimat-admin-session'); return s ? JSON.parse(s) : null; } catch (e) { return null; } },
     async stopImpersonation() {
